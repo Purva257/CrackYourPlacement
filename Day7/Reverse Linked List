@@ -1,0 +1,63 @@
+Given the head of a singly linked list, reverse the list, and return the reversed list.
+Example 1:
+Input: head = [1,2,3,4,5]
+Output: [5,4,3,2,1]
+Example 2:
+
+Input: head = [1,2]
+Output: [2,1]
+Example 3:
+
+Input: head = []
+Output: []
+ 
+
+Constraints:
+The number of nodes in the list is the range [0, 5000].
+-5000 <= Node.val <= 5000
+----------------------------------------------------------------------------------------------
+C++ Solution
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+         ListNode* prev = nullptr;
+        ListNode* current = head;
+        ListNode* next = nullptr;
+        
+        while (current != nullptr) {
+            next = current->next;  // Save next node
+            current->next = prev;  // Reverse current node's pointer
+            prev = current;        // Move prev to current node
+            current = next;        // Move to next node
+        }
+        
+        return prev;  // prev is the new head of the reversed list
+    }
+};
+
+// Helper function to print the linked list (for testing purposes)
+void printList(ListNode* head) {
+    ListNode* temp = head;
+    while (temp != nullptr) {
+        std::cout << temp->val << " ";
+        temp = temp->next;
+    }
+    std::cout << std::endl;
+}
+
+// Helper function to create a new ListNode (for testing purposes)
+ListNode* newNode(int data) {
+    ListNode* node = new ListNode(data);
+    return node;
+};
