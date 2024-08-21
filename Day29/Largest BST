@@ -1,0 +1,86 @@
+Given a binary tree. Find the size of its largest subtree which is a Binary Search Tree.
+Note: Here Size equals the number of nodes in the subtree.
+
+Examples :
+
+Input:   1
+        /  \
+        4   4              
+       / \ 
+      6   8
+Output: 1 
+Explanation: There's no sub-tree with size greater than 1 which forms a BST. All the leaf Nodes are the BSTs with size equal to 1.
+
+Input:    6
+        /   \
+      6      2              
+       \    / \
+        2  1   3
+Output: 3
+Explanation: The following sub-tree is a BST of size 3:  2
+                                                       /   \
+                                                      1     3
+Expected Time Complexity: O(n).
+Expected Auxiliary Space: O(Height of the BST).
+
+Constraints:
+1 ≤ Number of nodes ≤ 105
+1 ≤ Data of a node ≤ 106
+---------------------------------------------------------------------------------------------
+C++ Solution
+
+struct Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};*/
+
+class Solution{
+    public:
+    struct Info {
+        int size;        // Size of the subtree
+        int max;         // Maximum value in the subtree
+        int min;         // Minimum value in the subtree
+        int largestBST;  // Size of the largest BST in the subtree
+        bool isBST;      // True if the subtree is a BST
+    };
+    
+    Info findLargestBST(Node* root) {
+        // Base case: If the node is NULL, return an Info for an empty subtree
+        if (root == NULL) {
+            return {0, INT_MIN, INT_MAX, 0, true};
+        }
+        
+        // Recursively find info for the left and right subtrees
+        Info leftInfo = findLargestBST(root->left);
+        Info rightInfo = findLargestBST(root->right);
+        
+        Info currentInfo;
+        currentInfo.size = 1 + leftInfo.size + rightInfo.size;
+        
+        // Check if the current subtree rooted at 'root' is a BST
+        if (leftInfo.isBST && rightInfo.isBST &&
+            root->data > leftInfo.max && root->data < rightInfo.min) {
+            
+            currentInfo.min = min(root->data, leftInfo.min);
+            currentInfo.max = max(root->data, rightInfo.max);
+            currentInfo.largestBST = currentInfo.size;
+            currentInfo.isBST = true;
+        } else {
+            currentInfo.largestBST = max(leftInfo.largestBST, rightInfo.largestBST);
+            currentInfo.isBST = false;
+        }
+        
+        return currentInfo;
+    }
+    
+    int largestBst(Node *root) {
+        return findLargestBST(root).largestBST;
+    }
+};
+
