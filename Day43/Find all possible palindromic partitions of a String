@@ -1,0 +1,66 @@
+Given a String S, Find all possible Palindromic partitions of the given String.
+ 
+Example 1:
+Input:
+S = "geeks"
+Output:
+g e e k s
+g ee k s
+Explanation:
+All possible palindromic partitions
+are printed.
+Example 2:
+
+Input:
+S = "madam"
+Output:
+m a d a m
+m ada m
+madam
+
+Your Task:
+You don't need to read input or print anything. Your task is to complete the function allPalindromicPerms() which takes a String S as input parameter and returns a list of lists denoting all the possible palindromic partitions in the order of their appearance in the original string.
+
+Expected Time Complexity: O(N*2N)
+Expected Auxiliary Space: O(N2), where N is the length of the String
+
+Constraints:
+1 <= |S| <= 20
+--------------------------------------------------------------------------------------------
+C++ Solution
+
+class Solution {
+  public:
+
+    bool isPalindrome(const string &str, int left, int right) {
+        while (left < right) {
+            if (str[left] != str[right])
+                return false;
+            left++;
+            right--;
+        }
+        return true;
+    }
+
+    void backtrack(int start, string &s, vector<string> &currentPartition, vector<vector<string>> &result) {
+        if (start == s.length()) {
+            result.push_back(currentPartition);
+            return;
+        }
+        
+        for (int end = start; end < s.length(); ++end) {
+            if (isPalindrome(s, start, end)) {
+                currentPartition.push_back(s.substr(start, end - start + 1));
+                backtrack(end + 1, s, currentPartition, result);
+                currentPartition.pop_back(); 
+            }
+        }
+    }
+
+    vector<vector<string>> allPalindromicPerms(string S) {
+        vector<vector<string>> result;
+        vector<string> currentPartition;
+        backtrack(0, S, currentPartition, result);
+        return result;
+    }
+};
