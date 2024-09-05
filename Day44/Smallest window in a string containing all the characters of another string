@@ -1,0 +1,80 @@
+Given two strings S and P. Find the smallest window in the string S consisting of all the characters(including duplicates) of the string P.  Return "-1" in case there is no such window present. In case there are multiple such windows of same length, return the one with the least starting index.
+Note : All characters are in Lowercase alphabets. 
+
+Example 1:
+Input:
+S = "timetopractice"
+P = "toc"
+Output: 
+toprac
+Explanation: "toprac" is the smallest
+substring in which "toc" can be found.
+Example 2:
+
+Input:
+S = "zoomlazapzo"
+P = "oza"
+Output: 
+apzo
+Explanation: "apzo" is the smallest 
+substring in which "oza" can be found.
+Your Task:
+You don't need to read input or print anything. Your task is to complete the function smallestWindow() which takes two string S and P as input paramters and returns the smallest window in string S having all the characters of the string P. In case there are multiple such windows of same length, return the one with the least starting index. 
+
+Expected Time Complexity: O(|S|)
+Expected Auxiliary Space: O(n) n = len(p)
+
+Constraints: 
+1 ≤ |S|, |P| ≤ 105
+---------------------------------------------------------------------------
+C++ Solution
+
+class Solution
+{
+    public:
+    string smallestWindow (string s, string p)
+    {
+        if (s.empty() || p.empty()) return "-1";
+
+        vector<int> hash_pat(26, 0);
+        for (char c : p) {
+            hash_pat[c - 'a']++;
+        }
+        
+        int required = p.length(); 
+        int min_length = INT_MAX;
+        int start = 0; 
+        int left = 0, right = 0; 
+        
+        vector<int> hash_str(26, 0); 
+        
+        while (right < s.length()) {
+            char curr_char = s[right];
+            hash_str[curr_char - 'a']++;
+  
+            if (hash_pat[curr_char - 'a'] != 0 && hash_str[curr_char - 'a'] <= hash_pat[curr_char - 'a']) {
+                required--;
+            }
+            
+
+            while (required == 0) {
+                if (min_length > right - left + 1) {
+                    min_length = right - left + 1;
+                    start = left;
+                }
+                
+                char left_char = s[left];
+                hash_str[left_char - 'a']--;
+      
+                if (hash_pat[left_char - 'a'] != 0 && hash_str[left_char - 'a'] < hash_pat[left_char - 'a']) {
+                    required++;
+                }
+                left++;
+            }
+            right++;
+        }
+        
+        if (min_length == INT_MAX) return "-1";
+        return s.substr(start, min_length);
+    }
+};
